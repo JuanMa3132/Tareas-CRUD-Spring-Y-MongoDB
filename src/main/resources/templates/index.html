@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        .ED {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            text-align:center;
+            align-items:center;
+        }
+        .Status, .Status_radio{
+            margin: 5px;
+            text-align:center;
+            align-items:center;
+        }
+        .editable {
+        display: none;
+    }
+    .ED {
+        border-style: none;
+    }
+    </style>
+</head>
+<body data-bs-theme="dark">
+<div class="container mt-4">
+    <!-- Formulario para añadir una tarea -->
+    <form action="#" th:action="@{/agregar}" th:object="${Tarea}" method="post">
+        <input type="text" th:field="*{nombre}" placeholder="Nombre de la tarea">
+        <input type="text" th:field="*{descripcion}" placeholder="Descripción de la tarea">
+        <input class="btn btn-succeses"type="submit" value="Añadir tarea">
+    </form>
+
+    <!-- Tabla para mostrar las tareas -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha de Creación</th>
+            <th>Completada</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteramos sobre cada tarea en la lista de tareas -->
+        <tr th:each="tarea : ${Tareas}">
+            <td th:value="${tarea.id}">
+                <span class="static" th:text="${tarea.id}"></span>
+            </td>
+            <td>
+                <span class="static" th:text="${tarea.nombre}"></span>
+            </td>
+            <td>
+                <span class="static" th:text="${tarea.descripcion}"></span>
+            </td>
+            <td th:value="${tarea.fechaCreacion}">
+                <span class="static" th:text="${tarea.fechaCreacion}"></span>
+            </td>
+            <td>
+                <!-- Formulario para actualizar el estado de la tarea -->
+                <form th:action="@{/completar/{id}(id=${tarea.id})}" method="post">
+                    <div class="Status">
+                        <h6>Estado de la tarea</h6>
+                        <span th:if="${tarea.completada}"x| class="icono-listo">✔️</span>
+                        <span th:unless="${tarea.completada}" class="icono-x">❌</span>
+                    </div>
+
+                    <div class="Status_radio">
+                        <!-- Radio buttons para seleccionar el estado de la tarea -->
+                        <input type="radio" id="completada" name="completada" value="true">
+                        <label for="completada">✔️</label>
+
+                        <input type="radio" id="noCompletada" name="completada" value="false">
+                        <label for="noCompletada">❌</label>
+                        <input type="submit" value="Actualizar">
+                    </div>
+
+                </form>
+            </td>
+            <!-- Botones para editar y eliminar la tarea -->
+            <td class="ED">
+                <a  th:href="@{/editar/}+${tarea.id}"class="btn btn-warning" >Editar</a>
+                <a th:href="@{/eliminar/{id}(id=${tarea.id})}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
